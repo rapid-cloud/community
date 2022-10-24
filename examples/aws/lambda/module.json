@@ -1,0 +1,51 @@
+{
+    "lambda": {
+        "create": {
+            "enabled": true,
+            "help": "Create Lambda Function",
+            "template_section": "compute",
+            "template_enabled": true,
+            "metadata_table": "metadata",
+            "create_aws_infra": false,
+            "id": "name",
+            "args": {
+                "name": {
+                    "name": "Lambda Function Name", 
+                    "prompt": "Enter Name with no spaces", 
+                    "required": true,
+                    "default": ""
+                },           
+                "memory_size": {
+                    "name": "Memory Size", 
+                    "prompt": "Enter Memory Size in MB", 
+                    "required": true,
+                    "default": "128"
+                },           
+                "timeout": {
+                    "name": "Timeout", 
+                    "prompt": "Enter Timeout in seconds", 
+                    "required": true,
+                    "default": "60"
+                },           
+                "schedule": {
+                    "name": "Schedule", 
+                    "prompt": "Enter a cron expression", 
+                    "required": false,
+                    "default": ""
+                },           
+                "env_vars": {
+                    "name": "Environment Variables", 
+                    "prompt": "Enter environment variables as Json string or skip it here and modify in the console", 
+                    "required": false,
+                    "default": ""
+                },           
+                "add_default_layers": {
+                    "name": "Add RapidCloud Lambda Layers for Data and Analytics functionality", 
+                    "prompt": "Add RapidCloud Lambda Layers [yes|no]", 
+                    "required": false,
+                    "default": "no"
+                }          
+            }
+        }
+    }
+}

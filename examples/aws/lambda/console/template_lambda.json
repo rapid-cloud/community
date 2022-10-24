@@ -1,0 +1,86 @@
+{
+  "type": "Theia::Action",
+  "label": "Lambda Functions",
+  "id": "lambda",
+  "steps": [
+    {
+      "type": "Theia::Step::Grid",
+      "id": "lambda",
+      "datasource": "data?type=metadata&filter_name=module&filter_value=lambda",
+      "env_param_required": true,
+      "columns": ["module","name","timestamp"],
+      "title": "Lambda Function",
+      "description": "",
+      "submit": "Continue"
+    },
+    {
+      "type": "Theia::Step::Form",
+      "id": "lambda",
+      "title": "",
+      "description": "",
+      "readonly": false,
+      "commands": [
+        {
+          "label": "Remove",
+          "require_confirmation": true,
+          "confirmation_message": "Are you sure you want to remove this item?",
+          "command": {
+            "phase": "undo-command",
+            "refresh_status": true
+          }
+        },
+        {
+          "label": "Submit",
+          "command": {
+            "phase": "lambda",
+            "command": "create",
+            "refresh_status": true
+          }
+        }
+      ],
+      "controls": [
+        {
+          "type": "Theia::Control::Input",
+          "id": "fqn",
+          "hidden": true
+        },
+        {
+          "type": "Theia::Control::Input",
+          "id": "name",
+          "cli_name": "name",
+          "label": "Lambda Function Name",
+          "help": "",
+          "inputType": "text"
+        },
+        {
+          "type": "Theia::Control::Input",
+          "id": "lambda_memory_size",
+          "label": "Memory Size",
+          "help": "",
+          "inputType": "text"
+        },
+        {
+          "type": "Theia::Control::Input",
+          "id": "lambda_timeout",
+          "label": "Enter Lambda Function timeout in Seconds (default is 900)",
+          "help": "",
+          "inputType": "text"
+        },
+        {
+          "type": "Theia::Control::Input",
+          "id": "lambda_schedule",
+          "label": "Enter a cron expression",
+          "help": "Example: run every day at midnight => 0 4 * * ? *",
+          "inputType": "text"
+        },
+        {
+          "type": "Theia::Control::KeyValue",
+          "id": "lambda_env_vars",
+          "label": "Environment Variables",
+          "dynamic_datasource": "data?type=metadata&filter_name=module,name&filter_value=lambda,${name}&result=params,lambda_env_vars",
+          "add_value_label": "Add new environment variable for your Lambda Function"
+        }
+      ]
+    }
+  ]
+}
