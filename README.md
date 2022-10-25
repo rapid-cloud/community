@@ -9,7 +9,6 @@ https://github.com/rapid-cloud/community/tree/main/tutorials
 
 https://github.com/rapid-cloud/community/tree/main/examples
 
-### Custom modules
+### Reusable RapidCloud custom modules
 
-Reusable RapidCloud custom modules
-
+https://github.com/rapid-cloud/community/tree/main/custom_modules

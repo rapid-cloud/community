@@ -1,6 +1,6 @@
-## RapidCloud Custom Modules
+# RapidCloud Custom Modules
 
-### What is a RapidCloud Module
+## What is a RapidCloud Module
 
 Module is a set of features to support specific type of AWS resource or set of resources, any business logic as well as convenient and secure way to manage application configurations. For example, `ec2` module suports various features associated with creating and changing EC2 instances. `transform` module accelerates creation of transformation Glue jobs. `trendmicro` module supports integration with Trend Micro Cloud One security products via API.
 
@@ -26,11 +26,7 @@ RapidCloud has an extensive set of out-of-the-box modules that you can start usi
 
 In the meantime, if you require specific functionality that is not supported by RapidCloud, you can develop your own custom modules for RapidCloud by following a few steps outlined below.
 
-<br/>
-
-<a name="start"></a>
-
-### Create new RapidCloud module
+## Create new RapidCloud module
 
 * `kc module create` (provide module name and first command via prompts) 
 
@@ -43,29 +39,20 @@ In the meantime, if you require specific functionality that is not supported by 
             * template_module_{module-name}_{command-name}.json
             * template_module_{module-name}_{command-name}.md
 
-<br/>
 
-### Add new command to your existing custom RapidCloud module
+## Add new command to your existing custom RapidCloud module
 
 * `kc module add_command` (provide module name and command name via prompts)
 
 * This updates your `module.json`, `__init__.py` and creates console template to include new command skeleton.
 
 
-<br/>
-
-<a name="customize"></a>
-
-### How to customize your commands
+## How to customize your commands
 
 `module.json` drives RapidCloud module functionality.
 
 Here is RapidCloud `rds` module to illustrate configuration sections
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+
 ```
 {
   "rds": {
@@ -141,8 +128,6 @@ Here is RapidCloud `rds` module to illustrate configuration sections
   }
 }
 ```
-  </p>
-</details>
 
 As you can see, `rds` module has two commands: 
 
@@ -167,11 +152,7 @@ Example:
 Once all the arguments are collected, RapidCloud will call a Python function in `__init__.py`, with the same name as the command. So if you run `kc rds create`, it will call `create` function in your module's `__init__.py`. All provided arguments will be automatically saved in `metadata` DynamoDB table in your environment account. The rest of functionality will be added by you in the `__init__.py` `create` function, which includes in-code instructions for your convenience. 
 
 Here is a template function code that is generated when you create a module
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+
 ```
 def create(self, metadata=None):
     # Step 1
@@ -223,15 +204,9 @@ def create(self, metadata=None):
     DMS jobs, start Glue workflows, etc
     '''
 ```
-  </p>
-</details>
 
 
-<br/>
-
-<a name="terraform"></a>
-
-### How to add custom terraform templates and modules
+## How to add custom terraform templates and modules
 
 RapidCloud uses Terraform for infrastructure automation. Each AWS resource type supported by RapidCloud has a jinja template and an optional terraform module code. If you want to add custom terraform automation features to your RapidCloud module, follow these simple steps:
 
@@ -239,17 +214,10 @@ RapidCloud uses Terraform for infrastructure automation. Each AWS resource type 
 
 2. For simple resources, your jinja template will provide all the functionality to generate final terraform code. For more complex resources you'll need to create corresponding terraform module code, and save in `./terraform/modules` directory. Terraform module code must be placed in its own directory `{resource_type}`, where `{resource_type}` is the AWS resource type supported by terraform. For example, `lambda_function`, `aws_instance`, etc. See currently supported RapidCloud modules in your `./terraform/modules`.
 
-<br/>
-
 Here is an example of jinja template to support `sns_topic_subscription` automation. This is a simple resource, therefore there is no corresponding *.tf code.
 
-#### Jinja Template - ./terraform/custom_templates/sns_topic_subscription.j2
+### Jinja Template - ./terraform/custom_templates/sns_topic_subscription.j2
 
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
 ```
 resource "aws_lambda_permission" "{{ profile }}-{{ resource_type }}-{{ resource_name }}" {
   action        = "lambda:InvokeFunction"
@@ -265,19 +233,11 @@ resource "aws_sns_topic_subscription" "{{ profile }}-{{ resource_type }}-{{ reso
   topic_arn = aws_sns_topic.{{ profile }}-sns_topic-{{ params['topic_name'] }}.arn
 }
 ```
-  </p>
-</details>
-
-<br/>
 
 Here is an example of a more complex resource, which includes both jinja template and terraform module, to support `s3_bucket` automation.
 
-#### Jinja Template - ./terraform/custom_templates/s3_bucket.j2
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+### Jinja Template - ./terraform/custom_templates/s3_bucket.j2
+
 ```
 module "{{ profile }}_{{ resource_name }}_{{ resource_type }}" {
   source        = "../modules/{{ resource_type }}"
@@ -293,15 +253,9 @@ module "{{ profile }}_{{ resource_name }}_{{ resource_type }}" {
   }
 }
 ```
-  </p>
-</details>
 
-#### Terraform Module Code - ./terraform/modules/s3_bucket/iam.tf
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+### Terraform Module Code - ./terraform/modules/s3_bucket/iam.tf
+
 ```
 resource "aws_iam_role" "role" {
   count = var.enable_bucket_policy ? 1 : 0
@@ -350,15 +304,9 @@ resource "aws_iam_policy" "policy" {
   policy = data.aws_iam_policy_document.policy_json.json
 }
 ```
-  </p>
-</details>
 
-#### Terraform Module Code - ./terraform/modules/s3_bucket/output.tf
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+### Terraform Module Code - ./terraform/modules/s3_bucket/output.tf
+
 ```
 output "bucket_arn" {
   value = aws_s3_bucket.s3.arn
@@ -368,15 +316,9 @@ output "bucket_name" {
   value = aws_s3_bucket.s3.id
 }
 ```
-  </p>
-</details>
 
-#### Terraform Module Code - ./terraform/modules/s3_bucket/s3.tf
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+### Terraform Module Code - ./terraform/modules/s3_bucket/s3.tf
+
 ```
 resource "aws_s3_bucket" "s3" {
   bucket = var.bucket_name
@@ -401,15 +343,9 @@ resource "aws_s3_bucket_public_access_block" "s3_public_access" {
   restrict_public_buckets = var.restrict_public_buckets
 }
 ```
-  </p>
-</details>
 
-#### Terraform Module Code - ./terraform/modules/s3_bucket/variables.tf
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
+### Terraform Module Code - ./terraform/modules/s3_bucket/variables.tf
+
 ```
 variable "bucket_name" {
   description = "The name of the s3 bucket to create"
@@ -452,51 +388,44 @@ variable "restrict_public_buckets" {
   default = true
 }
 ```
-  </p>
-</details>
 
 
-<br/>
+## Variables available in your jinja templates
 
-### Variables available in your jinja templates
-
-#### {{ client }}
+### {{ client }}
 
 Your orgnization abbreviation. Example `mycrop`
 
-#### {{ workload }}
+### {{ workload }}
 
 Your workload/application name. Example `orders`
 
-#### {{ env }}
+### {{ env }}
 
 Your workload/application phase/env. Example `dev`
 
-#### {{ profile }}
+### {{ profile }}
 
 Fully qualified name of your environment. Example `mycorp_orders_dev`
 
-#### {{ resource_name }}
+### {{ resource_name }}
 
 Resource name provided in your `__init__.py` code in the following line:
 
 `super().add_aws_resource(resource_type, resource_name, params)`
 
-#### {{ resource_type }}
+### {{ resource_type }}
 
 Resource type provided in your `__init__.py` code in the following line:
 
 `super().add_aws_resource(resource_type, resource_name, params)`
 
-#### {{ params['argument_name_for_your_module'] }}
+### {{ params['argument_name_for_your_module'] }}
 
 Argument defined in your `module.json` and collected from CLI or Console. 
 
-<br/>
 
-<a name="console"></a>
-
-### template_module_{module-name}_{command-name}.json
+## template_module_{module-name}_{command-name}.json
 
 Each module command will have a skeleton console template created by RapidCloud. If you want to use module features in RapidCloud Console UI in addition to the CLI, then you'll need to modify the template. 
 
@@ -505,11 +434,6 @@ Here is an RDS console template for `kc rds create` command. It contains two sec
 1. Grid, showing a list of RDS databases for your environment
 2. Form that collects RDS configuration/arguments when adding or editing RDS instance 
 
-<details>
-  <summary>
-    &gt;&gt; Show code
-  </summary>
-  <p>
 ```
 {
   "type": "Theia::Action",
@@ -625,10 +549,8 @@ Here is an RDS console template for `kc rds create` command. It contains two sec
   ]
 }
 ```
-  </p>
-</details>
 
-#### Here are supported form controls with examples
+### Here are supported form controls with examples
 
 **Text Input Field**
 
@@ -725,17 +647,13 @@ Here is an RDS console template for `kc rds create` command. It contains two sec
 }
 ```
 
-<br/>
 
-### template_module_{module-name}_{command-name}.md
+## template_module_{module-name}_{command-name}.md
 
 You can add Help Information to your module to have it displayed in the RapidCloud console. Just add markdown content to the auto-generated `template_module_{module-name}_{command-name}.md` file. Then you'll see an `"i"` icon which when clicked, will show the help section on the right side.
 
-<br/>
 
-<a name="activate_deactivate"></a>
-
-### Activate / Deactivate Custom Modules
+## Activate / Deactivate Custom Modules
 
 Once you're done testing module CLI functionality, you can modify your module console templates as per above and add to the RapidCloud console by running `kc module activate` command.
 
@@ -743,24 +661,20 @@ If you want to remove your module from the console, run `kc module deactivate`
 
 _NOTE_: run `kc module activate` if you want to apply changes to the console template `json` or `md` files. 
 
-<br/>
 
-<a name="export_install"></a>
-
-### Export / Install Custom Modules
+## Export / Install Custom Modules
 
 RapidCloud Custom Modules can be **shared** within and between organization. 
 
-#### Export Custom module
+### Export Custom module
 
 Run `kc module export --name {custom_module_name} --no-prompt` to create a portable zip file for your custom module.
 
-#### Install Custom Module
+### Install Custom Module
 
 Run `kc module install --name {custom_module_name} --module_zipfile_path {full_path_to_custom_module_zipfile}  --no-prompt` to install custom module from module export zip file.
 
-<br/>
 
-### RapidCloud version upgrades
+## RapidCloud version upgrades
 
 When upgrading to new versions of RapidCloud, your custom modules will not be affected, but we recommend using your source control of choice to keep your custom module code safe, as with any custom code you work on.
