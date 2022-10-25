@@ -1,6 +1,8 @@
 # How to create a complete data pipeline for semi-structured files
 
-RapidCloud includes a set of modules for creating end-to-end data pipelines for semi-structured files (e.g. JSON, CSV). It includes CDC (change data capture), transformations, and publishing to RDS database (MySQL or Postgres) for your BI needs.
+RapidCloud includes a set of modules for creating end-to-end data pipelines for semi-structured files (e.g. JSON, CSV). It includes CDC (change data capture), transformations, and publishing to RDS database (MySQL or Postgres) for your BI needs. 
+
+<img src="./pipeline1.png" alt="RapidCloud by Kinect" width="820" />
 
 
 ## Add metadata for every file
