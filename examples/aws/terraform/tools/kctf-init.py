@@ -23,10 +23,10 @@ parser.add_argument('--params', required=False, help="Json file with dynamic par
 args = parser.parse_args()
 
 with open(args.template, "r") as template_file:
-    template_file_contents = template_file.read()
-    if template_file_contents:
-        resource_file = open(args.output_file, 'a')
-        try:
+    try:
+        template_file_contents = template_file.read()
+        if template_file_contents:
+            resource_file = open(args.output_file, 'a')
             params = {}
             if args.params:
                 with open(args.params, "r") as params_file:
@@ -37,8 +37,7 @@ with open(args.template, "r") as template_file:
             resource_file.write(rendered_jinja_template)
             resource_file.close()
             print(f'saved: {args.output_file}')
-
-        except Exception as e:
-            print(e)
+    except Exception as e:
+        print(e)
 
 
