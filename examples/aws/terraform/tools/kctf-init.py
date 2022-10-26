@@ -26,7 +26,6 @@ with open(args.template, "r") as template_file:
     template_file_contents = template_file.read()
     if template_file_contents:
         resource_file = open(args.output_file, 'a')
-        resource_name = None
         try:
             params = {}
             if args.params:
@@ -37,9 +36,9 @@ with open(args.template, "r") as template_file:
             rendered_jinja_template = jinja_template.render(params)
             resource_file.write(rendered_jinja_template)
             resource_file.close()
+            print(f'saved: {args.output_file}')
 
-        except FileNotFoundError as e:
+        except Exception as e:
             print(e)
-        print(f'saved: {args.output_file}')
 
 
